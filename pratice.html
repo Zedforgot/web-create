@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<script>
+class h5 {
+  constructor(children) {
+    this.html(children)
+  }
+  html(children) {
+    for (let i = 0; i < children.length; i++) {
+      if (Object.prototype.toString.call(children[i])==='[object Object]') { 
+       //将文本插入元素中
+       for(let key in children[i]){
+        this[key]= document.createElement(key)
+        this.appendElement(key,undefined,children[i][key])//考虑到需要放入非body内元素中
+       }
+      } else if(Object.prototype.toString.call(children[i])==='[object Array]'){
+        this.html(children[i],children[i-1])// 元素内涵嵌套,数组情况下,将数组中元素放入前一个元素内
+      }else{// 单个元素,非数组情况下
+this[children[i]] = document.createElement(children[i])
+        this.appendElement(children[i],arguments[1])//考虑到需要放入非body内元素中
+      }
+    }
+  }
+  appendElement(child, el,text) {
+    console.log(text)
+    if (!el) {
+      if(text){
+        this[child].innerHTML=text
+    }
+      document.body.appendChild(this[child])//放入body中
+    } else {
+      this[el].appendChild(this[child])//放入el元素中
+    }
+    
+  }
+}
+let htmlContent=new h5(
+  [
+    {'div':'7777'},
+    'div',
+    [
+      {'p':'及凤飞飞九二五九'},
+      'a',
+      [
+        'span'
+      ]
+    ],
+    'div',
+    'p'
+  ]
+  )
+</script>
+</body>
+</html>
