@@ -7,54 +7,83 @@
 </head>
 <body>
 <script>
-class h5 {
+  //网页里塞html标签
+class htmlCreate {
   constructor(children) {
-    this.html(children)
+    this.html(children||[])//给类赋值属性
   }
   html(children) {
     for (let i = 0; i < children.length; i++) {
       if (Object.prototype.toString.call(children[i])==='[object Object]') { 
        //将文本插入元素中
        for(let key in children[i]){
-        this[key]= document.createElement(key)
-        this.appendElement(key,undefined,children[i][key])//考虑到需要放入非body内元素中
+        this[key]= document.createElement(key.split('|')[0])//属性为对应的标签
+        this.appendElement(key,arguments[1],children[i][key])//children[i][key]文本放入元素中
        }
       } else if(Object.prototype.toString.call(children[i])==='[object Array]'){
-        this.html(children[i],children[i-1])// 元素内涵嵌套,数组情况下,将数组中元素放入前一个元素内
+        // 元素内含嵌套,数组情况下,将数组中元素放入前一个元素内
+        this.html(children[i],typeof children[i-1]==='object'?Object.keys(children[i-1].split('|')[0])[0]:children[i-1].split('|')[0])
       }else{// 单个元素,非数组情况下
-this[children[i]] = document.createElement(children[i])
-        this.appendElement(children[i],arguments[1])//考虑到需要放入非body内元素中
+this[children[i]] = document.createElement(children[i].split('|')[0])//属性为对应的标签
+        // this.appendElement(children[i],arguments[1])//考虑到需要放入非body内元素中
+        this.appendElement(children[i],arguments[1])//用split切分取html标签方便给className
       }
     }
   }
   appendElement(child, el,text) {
-    console.log(text)
-    if (!el) {
-      if(text){
+    if(text){
         this[child].innerHTML=text
     }
-      document.body.appendChild(this[child])//放入body中
-    } else {
-      this[el].appendChild(this[child])//放入el元素中
-    }
-    
+    el?
+    this[el].appendChild(this[child])//放入el元素中
+    :
+    document.body.appendChild(this[child])//放入body中
   }
 }
-let htmlContent=new h5(
+
+  //对应html标签加特定的class类名
+class classNameCreate extends htmlCreate{
+  constructor(props) {
+    super(props)
+    this.cssClassName(props)
+  }
+  cssClassName(children){
+      children.forEach((item) => {
+        if(Object.prototype.toString.call(item)==='[object Array]'){
+          //数组的话递归
+
+        }else if(Object.prototype.toString.call(item)==='[object Object]'){
+          //如果元素是对象的话，那么拿到key，给key（dom元素）赋值clss类名
+          
+        }else{
+          //如果元素是字符串，那么获取dom元素，赋值clss类名
+          this[item].className=item.split('|')[1]||''
+        }
+      });
+  }
+}
+let className=new classNameCreate(
   [
-    {'div':'7777'},
-    'div',
+    {"div":'7777'},
+    "div|box2",
     [
-      {'p':'及凤飞飞九二五九'},
-      'a',
+      {"p|text":'及凤飞飞九二五九'},
+      "a",
       [
-        'span'
+        "span"
       ]
     ],
-    'div',
-    'p'
+    "div",
+    "p"
   ]
   )
+  class cssCreate extends htmlCreate{
+constructor(props){
+super(props)
+// console.log(props)
+}
+
+  }
 </script>
 </body>
 </html>
