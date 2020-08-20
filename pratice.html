@@ -7,6 +7,23 @@
 </head>
 <body>
 <script>
+let obj={
+  a:1,
+  b:0
+}
+// [
+//     {"div":'7777'},
+//     {"div|box2":'6'},
+//     [
+//       {"p|text":'及凤飞飞九二五九'},
+//       "a",
+//       [
+//         "span"
+//       ]
+//     ],
+//     "div",
+//     "p"
+//   ]
   //网页里塞html标签
 class htmlCreate {
   constructor(children) {
@@ -14,15 +31,19 @@ class htmlCreate {
   }
   html(children) {
     for (let i = 0; i < children.length; i++) {
-      if (Object.prototype.toString.call(children[i])==='[object Object]') { 
+      if (Object.prototype.toString.call(children[i])==='[object Object]') {
        //将文本插入元素中
        for(let key in children[i]){
-        this[key]= document.createElement(key.split('|')[0])//属性为对应的标签
-        this.appendElement(key,arguments[1],children[i][key])//children[i][key]文本放入元素中
+        this[JSON.stringify(children[i])]= document.createElement(key.split('|')[0])//属性为对应的标签
+        // console.log(this[children[i]])
+        // debugger
+      // console.log(arguments[1])
+      // console.log(this[arguments[1]])
+        this.appendElement(JSON.stringify(children[i]),arguments[1],children[i][key])//children[i][key]文本放入元素中
        }
       } else if(Object.prototype.toString.call(children[i])==='[object Array]'){
         // 元素内含嵌套,数组情况下,将数组中元素放入前一个元素内
-        this.html(children[i],typeof children[i-1]==='object'?Object.keys(children[i-1].split('|')[0])[0]:children[i-1].split('|')[0])
+         this.html(children[i],typeof children[i-1]==='object'?JSON.stringify(children[i-1]):children[i-1])
       }else{// 单个元素,非数组情况下
 this[children[i]] = document.createElement(children[i].split('|')[0])//属性为对应的标签
         // this.appendElement(children[i],arguments[1])//考虑到需要放入非body内元素中
@@ -34,10 +55,15 @@ this[children[i]] = document.createElement(children[i].split('|')[0])//属性为
     if(text){
         this[child].innerHTML=text
     }
-    el?
-    this[el].appendChild(this[child])//放入el元素中
-    :
-    document.body.appendChild(this[child])//放入body中
+    if(el){
+      this[el].appendChild(this[child])//放入el元素中
+    }else{
+      document.body.appendChild(this[child])//放入body中
+    }
+    // el?
+    // this[el].appendChild(this[child])//放入el元素中
+    // :
+    // document.body.appendChild(this[child])//放入body中
   }
 }
 
@@ -45,6 +71,7 @@ this[children[i]] = document.createElement(children[i].split('|')[0])//属性为
 class classNameCreate extends htmlCreate{
   constructor(props) {
     super(props)
+    // console.log(props)
     this.cssClassName(props)
   }
   cssClassName(children){
@@ -54,18 +81,34 @@ class classNameCreate extends htmlCreate{
 
         }else if(Object.prototype.toString.call(item)==='[object Object]'){
           //如果元素是对象的话，那么拿到key，给key（dom元素）赋值clss类名
-          
+          console.log(item)
+          // console.log(this[item])
+          // Object.keys(item)[0].split('|')[1]!==''?this[JSON.stringify(item)].className=Object.keys(item)[0].split('|')[1]:''
         }else{
+          // console.log(this[item])
           //如果元素是字符串，那么获取dom元素，赋值clss类名
-          this[item].className=item.split('|')[1]||''
+          if(item.split('|')[1]!==''){
+          this[item].className=item.split('|')[1]
+          }
         }
       });
   }
 }
-let className=new classNameCreate(
+
+  //对应html标签加特定的id名
+class idNameCreate extends classNameCreate{
+  constructor(props){
+    super(props)
+    this.cssIdName(props)
+  }
+  cssIdName(children){
+
+  }
+}
+let html=new idNameCreate(
   [
     {"div":'7777'},
-    "div|box2",
+    {"div|box2":'6'},
     [
       {"p|text":'及凤飞飞九二五九'},
       "a",
@@ -73,7 +116,7 @@ let className=new classNameCreate(
         "span"
       ]
     ],
-    "div",
+    "div|s",
     "p"
   ]
   )
@@ -82,7 +125,6 @@ constructor(props){
 super(props)
 // console.log(props)
 }
-
   }
 </script>
 </body>
