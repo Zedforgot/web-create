@@ -7,10 +7,18 @@
 </head>
 <body>
 <script>
-let obj={
-  a:1,
-  b:0
+class Father{
+constructor(){
 }
+a=1
+}
+class Son extends Father{
+  constructor(props){
+    super(props)
+    // console.log(this)
+  }
+}
+new Son()
 // [
 //     {"div":'7777'},
 //     {"div|box2":'6'},
@@ -27,31 +35,39 @@ let obj={
   //网页里塞html标签
 class htmlCreate {
   constructor(children) {
-    this.html(children||[])//给类赋值属性
+    this.html.call(this,children||[])//给类赋值属性
   }
+   n=0
+
   html(children) {
     for (let i = 0; i < children.length; i++) {
       if (Object.prototype.toString.call(children[i])==='[object Object]') {
+        this.n++
        //将文本插入元素中
        for(let key in children[i]){
-        this[JSON.stringify(children[i])]= document.createElement(key.split('|')[0])//属性为对应的标签
+        this[JSON.stringify(children[i])+this.n]= document.createElement(key.split('|')[0])//属性为对应的标签
+        // console.log(JSON.stringify(children[i]))
+        // console.log(JSON.stringify(children[i])+this.n)
+        // console.log(JSON.stringify(children[i])+this.n)
         // console.log(this[children[i]])
         // debugger
       // console.log(arguments[1])
       // console.log(this[arguments[1]])
-        this.appendElement(JSON.stringify(children[i]),arguments[1],children[i][key])//children[i][key]文本放入元素中
+        this.appendElement(JSON.stringify(children[i])+this.n,arguments[1],children[i][key])//children[i][key]文本放入元素中
        }
       } else if(Object.prototype.toString.call(children[i])==='[object Array]'){
         // 元素内含嵌套,数组情况下,将数组中元素放入前一个元素内
-         this.html(children[i],typeof children[i-1]==='object'?JSON.stringify(children[i-1]):children[i-1])
+         this.html(children[i],typeof children[i-1]==='object'?JSON.stringify(children[i-1])+this.n:children[i-1]+this.n)
       }else{// 单个元素,非数组情况下
-this[children[i]] = document.createElement(children[i].split('|')[0])//属性为对应的标签
+        this.n++
+this[children[i]+this.n] = document.createElement(children[i].split('|')[0])//属性为对应的标签
         // this.appendElement(children[i],arguments[1])//考虑到需要放入非body内元素中
-        this.appendElement(children[i],arguments[1])//用split切分取html标签方便给className
+        this.appendElement(children[i]+this.n,arguments[1])//用split切分取html标签方便给className
       }
     }
   }
   appendElement(child, el,text) {
+    console.log(child)
     if(text){
         this[child].innerHTML=text
     }
@@ -112,6 +128,7 @@ let html=new idNameCreate(
     [
       {"p|text":'及凤飞飞九二五九'},
       "a",
+    {"div|box2":'6'},
       [
         "span"
       ]
