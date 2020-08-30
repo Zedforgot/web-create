@@ -2,7 +2,8 @@
  class htmlCreate {
     constructor(children) {
       this.n=0//元素为对象或者单个元素下自增，取n值给每个元素做标记
-      this.html(children||[])//给类赋值属性
+      this[arguments[1]]=arguments[1]//给最外层元素arguments[1]赋予属性，在appendElement方法中被读取
+      this.html(children||[],arguments[1])//给类赋值属性 arguments[1]代表最外层元素
     }
     html(children) {
       for (let i = 0; i < children.length; i++) {
@@ -39,7 +40,7 @@
     //对应html标签加特定的class类名
   class classNameCreate extends htmlCreate{
     constructor(props) {
-      super(props)
+      super(props,arguments[1])
       this.cssClassName(this.filterCssName())
     }
     filterCssName(){
@@ -65,8 +66,8 @@
   }
     //对应html标签加特定的id名
   class idNameCreate extends classNameCreate{
-    constructor(props){
-      super(props)
+    constructor(props,dom){
+      super(props,dom)
       this.cssIdName(this.filterCssName())
     }
     cssIdName(children){
@@ -80,7 +81,6 @@
       })
     }
   }
-
     class cssCreate extends htmlCreate{
   constructor(props){
   super(props)

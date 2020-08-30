@@ -14,7 +14,6 @@
                     "dom",
                     {"dom":"文本内容"},
                 ]
-                ["dom"]
             ]
             对应：
                 <dom>
@@ -31,7 +30,7 @@
     对应：
                 <dom class="className"></dom>  
                 <dom class="className">文本内容</dom>  
-2、id添加
+3、id添加
 取第二个|之后字符为id
     [
         "dom||id"
@@ -39,5 +38,23 @@
     ]
     对应：
                 <dom id="id"></dom>  
-                <dom class="className" id="id">文本内容</dom>          
+                <dom class="className" id="id">文本内容</dom>
+4、如果外部是body，那么webCreate()第二个参数不传值；
+   如果外部是被包裹在是html中某个元素中，那么webCreate()第二个参数取html中需要被包裹的元素；
+   例：new WebCreate(
+       [
+        "dom",
+        [
+            "dom",
+            {"dom":"文本内容"},
+        ]
+    ],document.getElementById('box')
+   )
+    对应：
+        <dom id='box'>
+            <dom>
+                <dom></dom>  
+                <dom>文本内容</dom>  
+            </dom>
+        </dom>
 注意事项1、class和id中不允许出现|符号

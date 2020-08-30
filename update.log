@@ -1,0 +1,16 @@
+1、Sun Aug 16 21:57:36 2020
+    想到用数组和对象方式快速建设html方法，创造htmlCreate方法
+2、Fri Aug 21 00:50:06 2020
+    发现并解决htmlCreate自身BUG
+3、Fri Aug 21 02:19:20 2020
+    给每个dom元素加序号，防止htmlCreate中出现一模一样的元素导致程序错误
+4、Fri Aug 21 22:42:07 2020
+    创造classNameCreate方法，用于给html添加class类名
+5、Sun Aug 23 00:03:07 2020
+    a.创造idNameCreate方法，用于给html添加id名
+    b.由于idNameCreate与classNameCreate都是用|表示，故解决与classNameCreate方法冲突
+    c.将原先html文件拆分成html和js文件
+    d.添加readMe文件使用说明，用于webCreate方法使用
+6、Sun Aug 30 17:21:04 2020
+    a.添加update.log文件，webCreate更新日志
+    b.考虑到html被外部元素包裹，htmlCreate方法中增加被dom元素包裹机制
