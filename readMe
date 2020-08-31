@@ -20,7 +20,8 @@
                     <dom></dom>  
                     <dom>文本内容</dom>  
                 </dom>
-            
+注：img src属性为json的value值；
+    input type,value,placehodel属性以json的value值中'|'分隔
         
 2、class类名添加
     [

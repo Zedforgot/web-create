@@ -9,11 +9,23 @@
       for (let i = 0; i < children.length; i++) {
         if (Object.prototype.toString.call(children[i])==='[object Object]') {
           this.n++
-         //将文本插入元素中
-         for(let key in children[i]){
-          this[this.n+JSON.stringify(children[i])]= document.createElement(key.split('|')[0])//属性为对应的标签
-          this.appendElement(this.n+JSON.stringify(children[i]),arguments[1],children[i][key])//children[i][key]文本放入元素中
-         }
+          //将文本插入元素中
+          for(let key in children[i]){
+          if(key.split('|')[0]==='img'){//图片情况下
+            this[this.n+JSON.stringify(children[i])]= document.createElement(key.split('|')[0])//属性为对应的img元素
+            this[this.n+JSON.stringify(children[i])].src=children[i][key]//children[i][key]为img链接
+            this.appendElement(this.n+JSON.stringify(children[i]),arguments[1])
+          }else if(key.split('|')[0]==='input'){//输入框情况下
+            this[this.n+JSON.stringify(children[i])]= document.createElement(key.split('|')[0])//属性为对应的input元素
+            this[this.n+JSON.stringify(children[i])].type=children[i][key].split('|')[0]//children[i][key]为input类型
+            this[this.n+JSON.stringify(children[i])].value=children[i][key].split('|')[1]||''//children[i][key]为input value
+            this[this.n+JSON.stringify(children[i])].placeholder=children[i][key].split('|')[2]||''//children[i][key]为input placehodel
+            this.appendElement(this.n+JSON.stringify(children[i]),arguments[1])
+          }else{//非图片与input
+            this[this.n+JSON.stringify(children[i])]= document.createElement(key.split('|')[0])//属性为对应的元素
+            this.appendElement(this.n+JSON.stringify(children[i]),arguments[1],children[i][key])//children[i][key]文本放入元素中
+          }
+            }
         } else if(Object.prototype.toString.call(children[i])==='[object Array]'){
           // 元素内含嵌套,数组情况下,将数组中元素放入前一个元素内
            this.html(children[i],typeof children[i-1]==='object'?this.n+JSON.stringify(children[i-1]):this.n+children[i-1])
@@ -81,8 +93,14 @@
       })
     }
   }
-    class cssCreate extends htmlCreate{
+    class cssCreate{
   constructor(props){
-  super(props)
+    this.props=props
+     
   }
     }
+    // class WebCreate extends idNameCreate{
+    //   constructor(props,dom){
+    //     super(props,dom)
+    //   }
+    // }
